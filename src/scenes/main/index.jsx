@@ -25,7 +25,9 @@ import SkillsFeild from "./components/volunteerFeild";
 import ProjectsFeild from "./components/projectsFeild";
 import InterestsFeild from "./components/interestFeild";
 import { CopyButton } from "../../components/copyButton";
+import { SaveFile } from "../../components/writeResume";
 
+// ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥/////
 SyntaxHighlighter.registerLanguage("javascript", json);
 
 const JsonResumeForm = () => {
@@ -36,13 +38,10 @@ const JsonResumeForm = () => {
     JSON.stringify(initialResumeData, null, 2)
   );
 
-  // const changeOndelBtn = createContext()
-  const debouncedUpdateJsonData = debounce((values) => {
-    setJsonData(JSON.stringify(values, null, 2));
-  }, 300); // Adjust the delay as needed (in milliseconds)
-
   const handleFormChange = (values) => {
-    debouncedUpdateJsonData(values); // Call the debounced function
+    debounce((values) => {
+      setJsonData(JSON.stringify(values, null, 2));
+    }, 300);
   };
 
   const [open, setOpen] = useState(false);
@@ -61,14 +60,7 @@ const JsonResumeForm = () => {
     <Grid container spacing={2} pt={3} px={1} gap={"2"} rowGap={"50px"}>
       <Grid item xs={12} sm={12} md={6} paddingX={2} paddingY={2}>
         <Typography variant="h2">Form</Typography>
-        <Box
-          sx={{
-            maxHeight: "85vh", // Set the maximum height for the Box
-            overflowY: "auto", // Add a vertical scrollbar when content overflows
-          }}
-          backgroundColor={color.primary[500]}
-          pr={2}
-        >
+        <Box backgroundColor={color.primary[500]} pr={2}>
           <Formik
             initialValues={initialResumeData}
             validationSchema={resumeSchema}
@@ -83,8 +75,37 @@ const JsonResumeForm = () => {
                 onKeyUp={() => handleFormChange(values)}
                 onMouseUp={() => handleFormChange(values)}
               >
-                {/* Basic */}
-                <Box display="flex" flexDirection="column" gap="10px" mt="20px">
+                {/* Submit Button */}
+                <Box m={"10px 0"}>
+                  <Button // Form Elements
+                    color={"inherit"}
+                    variant="outlined"
+                    type="submit"
+                    disabled={!!touched && isValid ? false : true}
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    color="info"
+                    variant="outlined"
+                    onClick={() => SaveFile(values)}
+                    sx={{ marginLeft: "20px" }}
+                  >
+                    Download File
+                  </Button>
+                </Box>
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  gap="10px"
+                  mt="20px"
+                  sx={{
+                    maxHeight: "80vh", // Set the maximum height for the Box
+                    overflowY: "auto", // Add a vertical scrollbar when content overflows
+                  }}
+                >
+                  {/* Basic */}
                   <AccordianCustom
                     summary={"Basic Information"}
                     color={color}
@@ -179,7 +200,7 @@ const JsonResumeForm = () => {
                   />
 
                   <AccordianCustom
-                    summary={"publications "}
+                    summary={"Award "}
                     color={color}
                     Comp={FeildsArrayHandler}
                     propses={{
@@ -293,6 +314,7 @@ const JsonResumeForm = () => {
                     propses={{
                       arrayName: "projects", // important to give as in yup ore initialized feild
                       FeildName: ProjectsFeild,
+
                       initObject: {
                         name: "",
                         keywords: [""],
@@ -300,23 +322,6 @@ const JsonResumeForm = () => {
                       buttonName: "Projects",
                     }}
                   />
-                  <Box m={"10px 0"}>
-                    <Button
-                      color="primary"
-                      type="submit"
-                      variant="contained"
-                      disabled={!!touched && isValid ? false : true}
-                    >
-                      Submit
-                    </Button>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => console.log("values =", values)}
-                    >
-                      Show values
-                    </Button>
-                  </Box>
                 </Box>
               </form>
             )}
