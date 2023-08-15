@@ -16,12 +16,12 @@ const filterValidPropertiesRecursive = async (data, validationSchema) => {
         } else if (validationSchema.fields[key].type === "array") {
           if (Array.isArray(data[key])) {
             const nestedValidArray = [];
-            console.log(
-              "inner console :",
-              validationSchema.fields[key].innerType.fields,
-              "      ",
-              data[key]
-            );
+            // console.log(
+            //   "inner console :",
+            //   validationSchema.fields[key].innerType.fields,
+            //   "      ",
+            //   data[key]
+            // );
             for (const item of data[key]) {
               const nestedItem = await filterValidPropertiesRecursive(
                 item,
@@ -42,17 +42,17 @@ const filterValidPropertiesRecursive = async (data, validationSchema) => {
       } else {
         if (validationSchema.fields[key].type === "object") {
           validProperties[key] = {};
-          console.log("1");
+          // console.log("1");
         }
         if (validationSchema.fields[key].type === "array") {
           validProperties[key] = [];
-          console.log("2");
+          // console.log("2");
         }
         if (validationSchema.fields[key].type === "string") {
           validProperties[key] = "";
-          console.log("3");
+          // console.log("3");
         }
-        console.log(key);
+        // console.log(key);
       }
     } catch (error) {
       // Property is not valid according to the schema
