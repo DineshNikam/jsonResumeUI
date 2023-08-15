@@ -51,6 +51,7 @@ const JsonResumeForm = () => {
   // For preView of Data
   const handleFormChange = (values) => {
     debouncedUpdateJsonData(values); // Call the debounced function
+    // console.log(resumeSchema.fields["basics"]);
   };
 
   //CoppyButton OnClick
@@ -81,7 +82,7 @@ const JsonResumeForm = () => {
             initialValues={initialResumeData}
             validationSchema={resumeSchema}
             onSubmit={(values) => {
-              console.log(values);
+              // console.log(values);
             }}
           >
             {({ touched, errors, handleSubmit, isValid, values }) => (

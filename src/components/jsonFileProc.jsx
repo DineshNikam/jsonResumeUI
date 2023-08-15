@@ -3,6 +3,8 @@ import { useFormik, useFormikContext } from "formik";
 import { Input, Alert, Stack } from "@mui/material";
 import resumeSchema from "../Data/yup";
 import { filterValidProperties } from "./filterValidProperty";
+import { initialResumeData } from "../Data/initialValue";
+import { mergeObjectsRecursively } from "./addNullData";
 
 const JsonFileProcessor = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -43,14 +45,14 @@ const JsonFileProcessor = () => {
                   jsonData,
                   resumeSchema
                 );
-                // console.log(validData);
-
+                // console.log("valid Dta :", JSON.stringify(validData));
+                mergeObjectsRecursively(initialResumeData, validData);
                 setImportedValues(validData);
               } catch (error) {
                 console.error("Error occurred:", error);
               }
             })();
-            console.log("1");
+            console.log("1 : ");
             setSelectedFile(file);
             console.log("2");
             setFileStatus(null);
