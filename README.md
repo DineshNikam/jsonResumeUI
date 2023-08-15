@@ -1,7 +1,5 @@
 # JSON Resume Generator
 
-![Project Preview](https://your-image-link.com)
-
 ## Overview
 
 The JSON Resume Generator is a dynamic web application developed using React, Material-UI, Formik, and Yup. It simplifies the process of creating professional resumes by providing a user-friendly interface for generating JSON-based resumes. This project was inspired by the functionality of the jsonResume repository and is designed to enhance the resume-building experience.
@@ -26,7 +24,6 @@ The JSON Resume Generator is a dynamic web application developed using React, Ma
 - Material-UI (MUI): Ensures a visually appealing and consistent design.
 - Formik: Facilitates easy creation and management of complex forms.
 - Yup: Provides form validation for data accuracy.
-- [Other technologies you used]
 
 ## Deployment
 
@@ -43,8 +40,8 @@ The project is deployed and accessible at [https://jsonresumeui.vercel.app/](htt
 
 To run the project locally, follow these steps:
 
-1. Clone this repository: `git clone https://github.com/your-username/your-repo.git`
-2. Navigate to the project directory: `cd your-repo`
+1. Clone this repository: `git clone https://github.com/DineshNikam/jsonResumeUI.git`
+2. Navigate to the project directory: `cd jsonResumeUI`
 3. Install dependencies: `npm install`
 4. Start the development server: `npm start`
 5. Access the project in your browser at `http://localhost:3000`
@@ -55,4 +52,4 @@ Contributions are welcome! If you find any issues or have suggestions for improv
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the Contributor Agreement and License (CREDIT-PROFIT). For more details, please refer to the [LICENSE](LICENSE) file.
