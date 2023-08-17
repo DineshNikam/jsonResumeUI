@@ -1,7 +1,7 @@
 // Function to filter out only valid properties recursively
 const filterValidPropertiesRecursive = async (data, validationSchema) => {
   const validProperties = {};
-
+  // console.log(validationSchema.fields, validationSchema.type);
   for (const key in validationSchema.fields) {
     try {
       if (data[key] !== undefined) {
@@ -56,6 +56,7 @@ const filterValidPropertiesRecursive = async (data, validationSchema) => {
       }
     } catch (error) {
       // Property is not valid according to the schema
+      console.log(error);
     }
   }
 

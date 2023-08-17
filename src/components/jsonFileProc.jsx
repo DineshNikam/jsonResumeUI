@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { useFormik, useFormikContext } from "formik";
-import { Input, Alert, Stack } from "@mui/material";
+import { Input, Alert, Typography, Stack, Box } from "@mui/material";
 import resumeSchema from "../Data/yup";
 import { filterValidProperties } from "./filterValidProperty";
 import { initialResumeData } from "../Data/initialValue";
 import { mergeObjectsRecursively } from "./addNullData";
 
-const JsonFileProcessor = () => {
+const JsonFileProcessor = ({ setValues }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileStatus, setFileStatus] = useState(null);
-  const { setValues } = useFormikContext();
 
   const setImportedValues = (importData) => {
     setValues(importData);
@@ -76,31 +75,41 @@ const JsonFileProcessor = () => {
   };
 
   return (
-    <div>
-      <h2>JSON File Processor</h2>
-      <Stack>
-        <Input
-          type="file"
-          accept=".json"
-          onChange={handleFileChange}
-          onClick={() => {
-            setSelectedFile(null);
-            setFileStatus(null);
-          }}
-          disabled={fileStatus === "Processing..."}
-        />
-        {selectedFile && <p>Selected File: {selectedFile.name}</p>}
+    <Box height="100%">
+      <Typography variant="h3">JSON File Processor</Typography>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignContent="center"
+        justifyContent="space-evenly"
+        height="100%"
+        paddingY="1rem"
+      >
+        <Box>
+          <Input
+            type="file"
+            accept=".json"
+            onChange={handleFileChange}
+            onClick={() => {
+              setSelectedFile(null);
+              setFileStatus(null);
+            }}
+            disabled={fileStatus === "Processing..."}
+          />
+          {selectedFile && <p>Selected File: {selectedFile.name}</p>}
+        </Box>
+
         {fileStatus && (
           <Alert
             severity={
               fileStatus === "File Processed Successfully" ? "success" : "error"
             }
           >
-            {fileStatus}
+            <Typography variant="subtitle1">{fileStatus}</Typography>
           </Alert>
         )}
-      </Stack>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

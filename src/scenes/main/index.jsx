@@ -34,6 +34,7 @@ const debounce = require("lodash/debounce");
 //-------------------------------------------------------------------------------
 
 const JsonResumeForm = () => {
+  const [output, setOutput] = useState("json");
   const theme = useTheme();
   const color = tokens(theme.palette.mode);
   const [copied, setCopied] = useState(false);
@@ -78,14 +79,22 @@ const JsonResumeForm = () => {
         <Typography variant="h2">Form</Typography>
         <Box backgroundColor={color.primary[500]} pr={2}>
           <Formik
-            enableReinitialize
+            enableReinitialize={true}
             initialValues={initialResumeData}
             validationSchema={resumeSchema}
             onSubmit={(values) => {
               // console.log(values);
             }}
           >
-            {({ touched, errors, handleSubmit, isValid, values }) => (
+            {({
+              touched,
+              errors,
+              handleSubmit,
+              isValid,
+              values,
+              setValues,
+              resetForm,
+            }) => (
               <form
                 noValidate
                 onSubmit={handleSubmit}
@@ -94,13 +103,24 @@ const JsonResumeForm = () => {
               >
                 {/* Submit Button */}
                 <Box m={"10px 0"}>
-                  <Button // Form Elements
+                  {/* <Button // Form Elements
                     color={"inherit"}
                     variant="outlined"
                     type="submit"
                     disabled={!!touched && isValid ? false : true}
                   >
-                    Submit
+                    Reset
+                  </Button>  */}
+                  <Button // Form Elements
+                    color={"inherit"}
+                    variant="outlined"
+                    type="submit"
+                    onClick={async () => {
+                      resetForm();
+                      await handleFormChange(values);
+                    }}
+                  >
+                    Reset
                   </Button>
                   <Button
                     color={"inherit"}
@@ -141,7 +161,7 @@ const JsonResumeForm = () => {
                           alignContent="stretch"
                           alignItems="start"
                         >
-                          <JsonFileProcessor />
+                          <JsonFileProcessor setValues={setValues} />
                         </Box>
                       </Paper>
                     </Box>
@@ -411,13 +431,15 @@ const JsonResumeForm = () => {
             overflowY: "auto", // Add a vertical scrollbar when content overflows
           }}
         >
-          <SyntaxHighlighter
-            language="json"
-            style={railscasts}
-            wrapLines={true}
-          >
-            {jsonData}
-          </SyntaxHighlighter>
+          {output === "json" ? (
+            <SyntaxHighlighter
+              language="json"
+              style={railscasts}
+              wrapLines={true}
+            >
+              {jsonData}
+            </SyntaxHighlighter>
+          ) : null}
         </Box>
       </Grid>
     </Grid>

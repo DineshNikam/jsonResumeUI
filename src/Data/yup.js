@@ -20,10 +20,7 @@ const resumeSchema = Yup.object().shape({
       .min(3, "at least Three char long"),
     label: Yup.string().required("Label is required"),
     image: Yup.string().matches(urlRegExp, urlWarning),
-    url: Yup.string().matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "Enter correct url!"
-    ),
+    url: Yup.string().matches(urlRegExp, "Enter correct url!"),
     summary: Yup.string(),
     email: Yup.string()
       .required("Email is Must")
