@@ -5,7 +5,7 @@ import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import LocationField from "./components/locationFeild";
 // import WorkExperienceForm from "./WorkExperienceForm";
 import resumeSchema from "../../Data/yup";
-import { initialResumeData } from "../../Data/initialValue";
+import { initialResumeData as initialData } from "../../Data/initialValue";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
 import AccordianCustom from "./../../components/accordian";
@@ -25,6 +25,11 @@ import InterestsFeild from "./components/interestFeild";
 import { CopyButton } from "../../components/copyButton";
 import { SaveFile } from "../../components/writeResume";
 import JsonFileProcessor from "../../components/jsonFileProc";
+import HtmlPreview from "../../components/htmlPreview";
+import GitForm from "./components/git";
+import BasicMenu from "../../components/menu";
+import { GitValues } from "../../Data/context";
+import { useEffect } from "react";
 
 // ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥   ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥/////
 
@@ -34,11 +39,12 @@ const debounce = require("lodash/debounce");
 //-------------------------------------------------------------------------------
 
 const JsonResumeForm = () => {
+  const [action, setAction] = useState(null);
   const [output, setOutput] = useState("json");
   const theme = useTheme();
   const color = tokens(theme.palette.mode);
   const [copied, setCopied] = useState(false);
-
+  const [initialResumeData, setInitialResumeData] = useState(initialData);
   const [importDataPaper, setImportDataPaper] = useState(false);
 
   //♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦
@@ -49,6 +55,12 @@ const JsonResumeForm = () => {
     setJsonData(JSON.stringify(values, null, 2));
   }, 300);
 
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("change");
+      setJsonData(JSON.stringify(initialData, null, 2));
+    }, 1000);
+  }, [initialResumeData]);
   // For preView of Data
   const handleFormChange = (values) => {
     debouncedUpdateJsonData(values); // Call the debounced function
@@ -70,7 +82,12 @@ const JsonResumeForm = () => {
     setOpen(false);
   };
 
-  // ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦ Upload File And Handle Logic ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦
+  // ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦ Git related  ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦
+  const [apiKey, setApiKey] = useState("");
+  const [openGit, setOpenGit] = useState(false);
+  const [gistId, setGistId] = useState("");
+  const [editStatus, setEditStatus] = useState("");
+  const [postStatus, setPostStatus] = useState("");
 
   // ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦
   return (
@@ -99,7 +116,6 @@ const JsonResumeForm = () => {
                 noValidate
                 onSubmit={handleSubmit}
                 onKeyUp={() => handleFormChange(values)}
-                onMouseUp={() => handleFormChange(values)}
               >
                 {/* Submit Button */}
                 <Box m={"10px 0"}>
@@ -166,7 +182,6 @@ const JsonResumeForm = () => {
                       </Paper>
                     </Box>
                   )}
-
                   {/* Download Resume */}
                   <Button
                     color="info"
@@ -176,6 +191,38 @@ const JsonResumeForm = () => {
                   >
                     Download File
                   </Button>
+                  {/* Git button */}
+                  <BasicMenu
+                    action={action}
+                    setAction={setAction}
+                    setOpenGit={setOpenGit}
+                  />
+                  {openGit && (
+                    <GitValues.Provider
+                      value={{
+                        gistId,
+                        setGistId,
+                      }}
+                    >
+                      <GitForm
+                        gistId={gistId}
+                        setGistId={setGistId}
+                        openGit={openGit}
+                        setApiKey={setApiKey}
+                        setOpenGit={setOpenGit} // dialogu box
+                        editStatus={editStatus}
+                        postStatus={postStatus}
+                        apiKey={apiKey} // api key of github
+                        setValues={setValues} //set  values of form
+                        values={values} // getting values from form to update
+                        action={action}
+                        setAction={setAction}
+                        setEditStatus={setEditStatus}
+                        setPostStatus={setPostStatus}
+                        setInitialResumeData={setInitialResumeData}
+                      />{" "}
+                    </GitValues.Provider>
+                  )}
                 </Box>
 
                 <Box
@@ -413,17 +460,24 @@ const JsonResumeForm = () => {
       </Grid>
       <Grid item xs={12} sm={12} md={6} paddingY={2} position="sticky">
         <Typography variant="h2">JSON Output</Typography>
-        <Box display={"flex"} flexDirection={"row"}>
-          {
-            <CopyButton
-              copied={copied}
-              jsonData={jsonData}
-              setCopied={setCopied}
-              handleClick={handleClick}
-              open={open}
-              handleClose={handleClose}
-            />
-          }
+
+        <Box display={"flex"} flexDirection={"row"} mt="4px" columnGap="1rem">
+          <Button
+            onClick={() => setOutput("json")}
+            variant="outlined"
+            color="info"
+            size="small"
+          >
+            <Typography variant="h5"> JSON</Typography>
+          </Button>
+          <Button
+            onClick={() => setOutput("html")}
+            variant="outlined"
+            color="info"
+            size="small"
+          >
+            <Typography variant="h5"> HTML</Typography>
+          </Button>
         </Box>
         <Box
           sx={{
@@ -439,8 +493,18 @@ const JsonResumeForm = () => {
             >
               {jsonData}
             </SyntaxHighlighter>
-          ) : null}
+          ) : (
+            <HtmlPreview />
+          )}
         </Box>
+        <CopyButton
+          copied={copied}
+          jsonData={jsonData}
+          setCopied={setCopied}
+          handleClick={handleClick}
+          open={open}
+          handleClose={handleClose}
+        />
       </Grid>
     </Grid>
   );
