@@ -12,7 +12,6 @@ import {
   mergeObjectsRecursively,
 } from "../../../components/addNullData";
 import { Box, Typography } from "@mui/material";
-import { GitValues } from "../../../Data/context";
 import { checkTokenValidity } from "../../../components/checkTokenValidity";
 import { useTheme } from "@emotion/react";
 import { Alert } from "@mui/material";
@@ -36,6 +35,8 @@ const GitForm = ({
   gistId,
   setGistId,
   setInitialResumeData,
+  setGitUsername,
+  gitUsername,
 }) => {
   // const gistId = "80a1f8f8d9e743d8a5bbe0e061d6ebb2";
   // const apiUrl = `https://api.github.com/gists/${gistId}`;
@@ -58,7 +59,7 @@ const GitForm = ({
 
   const handleApiKeySave = () => {
     (async () => {
-      const isValid = await checkTokenValidity(inputValue);
+      const isValid = await checkTokenValidity(inputValue, setGitUsername);
       if (isValid) {
         setApiKey(inputValue);
         setGitApiAlert("OK");
@@ -106,8 +107,16 @@ const GitForm = ({
   const handleGetGistData = async () => {
     // Call a function to fetch Gist data using apiKey
     // Update gistData and editStatus accordingly
-    console.log(apiKey, "\t", typeof apiKey);
+    // console.log(apiKey, "\t", typeof apiKey);
     // edit
+    if (!apiKey || apiKey === "") {
+      setEditStatus("Set and Validate Api key");
+      return;
+    }
+    if (!gistId || gistId === "") {
+      setEditStatus("Set Gist Id");
+      return;
+    }
     let reply = null;
     try {
       reply = await octo().request(`GET /gists/${gistId}`, {
@@ -121,11 +130,17 @@ const GitForm = ({
       // console.log(data.files["resume.json"].content);
       // reply = await octokit.gist(gistId);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      setEditStatus("Request error");
     }
-
+    if (reply.status === 404) {
+      setEditStatus("404 not found");
+    }
     if (reply.status === 200) {
       const file = reply.data.files["resume.json"].content || "";
+      if (file === "") {
+        return setEditStatus("resume.json does not exist");
+      }
       try {
         const jsonData = JSON.parse(file);
         try {
@@ -140,8 +155,10 @@ const GitForm = ({
               // console.log("valid Dta :", JSON.stringify(validData));
               mergeObjectsRecursively(initialResumeData, validData);
               setImportedValues(validData);
+              setEditStatus("ok");
             } catch (error) {
               console.error("Error occurred:", error);
+              setEditStatus("Internal validation error");
             }
           })();
 
@@ -155,17 +172,23 @@ const GitForm = ({
       } catch (parseError) {
         // setFileStatus("Error parsing JSON");
         console.log(parseError);
+        setEditStatus("Error parsing JSON");
       }
     }
   };
   // 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
   const handleUpdateGistData = async () => {
-    // Octokit.js
-    // https://github.com/octokit/core.js#readme
-    setPostStatus("Updating Data wait....");
+    if (!apiKey || apiKey === "") {
+      setPostStatus("Set and Validate Api key");
+      return;
+    }
+    if (!gistId || gistId === "") {
+      setPostStatus("Set Gist Id");
+      return;
+    }
     try {
       const filteredData = cleanDataBeforeExport(values);
-      console.log(filteredData);
+      // console.log(filteredData);
       const post = JSON.stringify(filteredData);
       // console.log(post);
       try {
@@ -181,6 +204,7 @@ const GitForm = ({
             "X-GitHub-Api-Version": "2022-11-28",
           },
         });
+        setPostStatus("Done");
       } catch (error) {
         if (error instanceof RequestError) {
           // handle Octokit error
@@ -201,44 +225,74 @@ const GitForm = ({
         } else {
           // handle all other errors
           console.log(error.status, error.message);
+
           throw error;
         }
       }
     } catch (e) {
-      console.error("filteringData Problem : ", e);
-      setPostStatus("Something went wrong ");
+      // console.error("filteringData Problem : ", e);
+      setPostStatus("Something went wrong in data Filtering ");
     }
-
-    // Call a function to update Gist data using apiKey
-    // const updatedGist = {
-    //   files: {
-    //     "filename.txt": {
-    //       content: newContent,
-    //     },
-    //   },
-    // };
-    // return fetch(apiUrl, {
-    //   method: "PATCH",
-    //   headers: {
-    //     Authorization: `Bearer ${apiKey}`,
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(updatedGist),
-    // });
-    // Update postStatus accordingly
   };
   return (
     <div>
-      <Dialog open={openGit} onClose={() => setOpenGit(false)}>
+      <Dialog
+        open={openGit}
+        onClose={() => {
+          setEditStatus("");
+          setPostStatus("");
+          setOpenGit(false);
+        }}
+      >
         <DialogContent>
           {action === 1 ? (
             <>
-              <Button onClick={handleGetGistData}>Get Gist Data</Button>
-              <p>Status: {editStatus}</p>
+              <Button
+                onClick={handleGetGistData}
+                color="info"
+                variant="outlined"
+              >
+                Get Gist Data
+              </Button>
+              {editStatus && (
+                <Alert
+                  severity={editStatus !== "ok" ? "error" : "success"}
+                  sx={{ marginLeft: "5px" }}
+                >
+                  <Typography variant="subtitle1">{editStatus}</Typography>
+                </Alert>
+              )}
+              <ul>
+                <li>
+                  {" "}
+                  <Typography variant="subtitle1">
+                    Make sure You provide valid{" "}
+                    <a
+                      style={{ color: color.primary[300] }}
+                      href={PAS}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Personal Access Token
+                    </a>
+                  </Typography>
+                </li>
+                <li>
+                  {" "}
+                  <Typography variant="subtitle1">Gist Id is Valid</Typography>
+                </li>
+                <li>
+                  {" "}
+                  <Typography variant="subtitle1">
+                    Gist contains file resume.json and it's public (used for
+                    html preview)
+                  </Typography>
+                </li>
+              </ul>
             </>
           ) : action === 3 ? (
             <>
-              <Box display="flex">
+              <Box display="flex" marginY="8px">
                 <TextField
                   label="GitHub API Key"
                   value={inputValue}
@@ -249,6 +303,7 @@ const GitForm = ({
                   color="warning"
                   variant="contained"
                   size="small"
+                  sx={{ marginLeft: "5px" }}
                 >
                   Save API Key
                 </Button>
@@ -257,12 +312,13 @@ const GitForm = ({
                     severity={
                       gitApiAlert === "Invalid Token" ? "error" : "success"
                     }
+                    sx={{ marginLeft: "5px" }}
                   >
                     <Typography variant="subtitle1">{gitApiAlert}</Typography>
                   </Alert>
                 )}
               </Box>
-              <Box>
+              <Box display="flex" justifyContent="start">
                 <TextField
                   label="Gist ID"
                   value={gistValue}
@@ -273,14 +329,16 @@ const GitForm = ({
                   size="small"
                   color="warning"
                   variant="contained"
+                  sx={{ marginLeft: "5px" }}
                 >
                   Save Gist ID
                 </Button>
                 {gistIdAlert && (
                   <Alert
                     severity={
-                      gistIdAlert === "Invalid Token" ? "error" : "success"
+                      gistIdAlert.toLowerCase() !== "ok" ? "error" : "success"
                     }
+                    sx={{ marginLeft: "5px" }}
                   >
                     <Typography variant="subtitle1">{gistIdAlert}</Typography>
                   </Alert>
@@ -317,8 +375,50 @@ const GitForm = ({
             </>
           ) : action === 2 ? (
             <>
-              <Button onClick={handleUpdateGistData}>Update Gist Data</Button>
-              <p>Status: {postStatus}</p>
+              <Button
+                onClick={handleUpdateGistData}
+                color="info"
+                variant="outlined"
+              >
+                Update Gist Data
+              </Button>
+              {postStatus && (
+                <Alert
+                  severity={
+                    postStatus.toLowerCase() !== "done" ? "error" : "success"
+                  }
+                  sx={{ marginLeft: "5px" }}
+                >
+                  <Typography variant="subtitle1">{postStatus}</Typography>
+                </Alert>
+              )}
+              <ul>
+                <li>
+                  {" "}
+                  <Typography variant="subtitle1">
+                    Make sure You provide valid{" "}
+                    <a
+                      style={{ color: color.primary[300] }}
+                      href={PAS}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Personal Access Token
+                    </a>
+                  </Typography>
+                </li>
+                <li>
+                  {" "}
+                  <Typography variant="subtitle1">Gist Id is Valid</Typography>
+                </li>
+                <li>
+                  {" "}
+                  <Typography variant="subtitle1">
+                    Gist contains file resume.json and it's public (used for
+                    html preview)
+                  </Typography>
+                </li>
+              </ul>
             </>
           ) : (
             !openGit && setOpenGit(false)
@@ -330,3 +430,5 @@ const GitForm = ({
 };
 
 export default GitForm;
+
+export const Selectoptions = ["elegant", "kendall", "even"];

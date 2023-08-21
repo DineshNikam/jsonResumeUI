@@ -6,6 +6,7 @@ export const checkGistFileExists = async (gistID, fileName) => {
     const gistResponse = await octokit.request(`GET /gists/${gistID}`);
     const gistFiles = gistResponse.data.files;
     // console.log("response : ", gistResponse);
+
     return gistFiles.hasOwnProperty(fileName) === true
       ? [true, "Ok"]
       : [false, "File does not Exists"];

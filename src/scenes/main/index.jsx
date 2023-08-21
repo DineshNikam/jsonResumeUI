@@ -26,10 +26,9 @@ import { CopyButton } from "../../components/copyButton";
 import { SaveFile } from "../../components/writeResume";
 import JsonFileProcessor from "../../components/jsonFileProc";
 import HtmlPreview from "../../components/htmlPreview";
-import GitForm from "./components/git";
+import GitForm, { Selectoptions } from "./components/git";
 import BasicMenu from "../../components/menu";
 import { GitValues } from "../../Data/context";
-import { useEffect } from "react";
 
 // ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥   ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥/////
 
@@ -39,13 +38,15 @@ const debounce = require("lodash/debounce");
 //-------------------------------------------------------------------------------
 
 const JsonResumeForm = () => {
-  const [action, setAction] = useState(null);
-  const [output, setOutput] = useState("json");
   const theme = useTheme();
   const color = tokens(theme.palette.mode);
+  const [action, setAction] = useState(null);
+  const [selectValue, setSelectValue] = useState(Selectoptions[0]);
+  const [output, setOutput] = useState("json");
   const [copied, setCopied] = useState(false);
   const [initialResumeData, setInitialResumeData] = useState(initialData);
   const [importDataPaper, setImportDataPaper] = useState(false);
+  const [gitUsername, setGitUsername] = useState("");
 
   //♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦
   const [jsonData, setJsonData] = useState(
@@ -55,12 +56,6 @@ const JsonResumeForm = () => {
     setJsonData(JSON.stringify(values, null, 2));
   }, 300);
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("change");
-      setJsonData(JSON.stringify(initialData, null, 2));
-    }, 1000);
-  }, [initialResumeData]);
   // For preView of Data
   const handleFormChange = (values) => {
     debouncedUpdateJsonData(values); // Call the debounced function
@@ -91,47 +86,41 @@ const JsonResumeForm = () => {
 
   // ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦
   return (
-    <Grid container spacing={2} pt={3} px={1} gap={"2"} rowGap={"50px"}>
-      <Grid item xs={12} sm={12} md={6} paddingX={2} paddingY={2}>
-        <Typography variant="h2">Form</Typography>
-        <Box backgroundColor={color.primary[500]} pr={2}>
-          <Formik
-            enableReinitialize={true}
-            initialValues={initialResumeData}
-            validationSchema={resumeSchema}
-            onSubmit={(values) => {
-              // console.log(values);
-            }}
-          >
-            {({
-              touched,
-              errors,
-              handleSubmit,
-              isValid,
-              values,
-              setValues,
-              resetForm,
-            }) => (
+    <Formik
+      enableReinitialize={true}
+      initialValues={initialResumeData}
+      validationSchema={resumeSchema}
+      onSubmit={(values) => {
+        // console.log(values);
+      }}
+    >
+      {({
+        touched,
+        errors,
+        handleSubmit,
+        isValid,
+        values,
+        setValues,
+        resetForm,
+      }) => (
+        <Grid container spacing={2} pt={3} px={1} gap={"2"} rowGap={"50px"}>
+          <Grid item xs={12} sm={12} md={6} paddingX={2} paddingY={2}>
+            <Typography variant="h2">Form</Typography>
+            <Box backgroundColor={color.primary[500]} pr={2}>
               <form
                 noValidate
                 onSubmit={handleSubmit}
                 onKeyUp={() => handleFormChange(values)}
+                onChange={() => handleFormChange(values)}
               >
                 {/* Submit Button */}
                 <Box m={"10px 0"}>
-                  {/* <Button // Form Elements
-                    color={"inherit"}
-                    variant="outlined"
-                    type="submit"
-                    disabled={!!touched && isValid ? false : true}
-                  >
-                    Reset
-                  </Button>  */}
                   <Button // Form Elements
-                    color={"inherit"}
+                    color={"error"}
                     variant="outlined"
                     type="submit"
                     onClick={async () => {
+                      setInitialResumeData(initialData);
                       resetForm();
                       await handleFormChange(values);
                     }}
@@ -142,7 +131,7 @@ const JsonResumeForm = () => {
                     color={"inherit"}
                     variant="outlined"
                     onClick={() => setImportDataPaper(true)}
-                    sx={{ marginLeft: "20px" }}
+                    sx={{ marginLeft: "5px" }}
                   >
                     Import Data
                   </Button>
@@ -160,7 +149,7 @@ const JsonResumeForm = () => {
                       <Paper
                         sx={{
                           height: "50%",
-                          weight: "50%",
+
                           position: "absolute",
                           top: "50%",
                           left: "50%",
@@ -187,16 +176,18 @@ const JsonResumeForm = () => {
                     color="info"
                     variant="outlined"
                     onClick={() => SaveFile(values)}
-                    sx={{ marginLeft: "20px" }}
+                    sx={{ marginLeft: "5px" }}
                   >
                     Download File
                   </Button>
                   {/* Git button */}
-                  <BasicMenu
-                    action={action}
-                    setAction={setAction}
-                    setOpenGit={setOpenGit}
-                  />
+                  <Box marginLeft="5px" display="inline">
+                    <BasicMenu
+                      action={action}
+                      setAction={setAction}
+                      setOpenGit={setOpenGit}
+                    />
+                  </Box>
                   {openGit && (
                     <GitValues.Provider
                       value={{
@@ -220,6 +211,8 @@ const JsonResumeForm = () => {
                         setEditStatus={setEditStatus}
                         setPostStatus={setPostStatus}
                         setInitialResumeData={setInitialResumeData}
+                        gitUsername={gitUsername}
+                        setGitUsername={setGitUsername}
                       />{" "}
                     </GitValues.Provider>
                   )}
@@ -454,59 +447,71 @@ const JsonResumeForm = () => {
                   />
                 </Box>
               </form>
-            )}
-          </Formik>
-        </Box>
-      </Grid>
-      <Grid item xs={12} sm={12} md={6} paddingY={2} position="sticky">
-        <Typography variant="h2">JSON Output</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} paddingY={2} position="sticky">
+            <Typography variant="h2">Output</Typography>
 
-        <Box display={"flex"} flexDirection={"row"} mt="4px" columnGap="1rem">
-          <Button
-            onClick={() => setOutput("json")}
-            variant="outlined"
-            color="info"
-            size="small"
-          >
-            <Typography variant="h5"> JSON</Typography>
-          </Button>
-          <Button
-            onClick={() => setOutput("html")}
-            variant="outlined"
-            color="info"
-            size="small"
-          >
-            <Typography variant="h5"> HTML</Typography>
-          </Button>
-        </Box>
-        <Box
-          sx={{
-            maxHeight: "80vh", // Set the maximum height for the Box
-            overflowY: "auto", // Add a vertical scrollbar when content overflows
-          }}
-        >
-          {output === "json" ? (
-            <SyntaxHighlighter
-              language="json"
-              style={railscasts}
-              wrapLines={true}
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              mt="4px"
+              columnGap="1rem"
             >
-              {jsonData}
-            </SyntaxHighlighter>
-          ) : (
-            <HtmlPreview />
-          )}
-        </Box>
-        <CopyButton
-          copied={copied}
-          jsonData={jsonData}
-          setCopied={setCopied}
-          handleClick={handleClick}
-          open={open}
-          handleClose={handleClose}
-        />
-      </Grid>
-    </Grid>
+              <Button
+                onClick={() => setOutput("json")}
+                variant="outlined"
+                color="info"
+                size="small"
+              >
+                <Typography variant="h5"> JSON</Typography>
+              </Button>
+              <Button
+                onClick={() => setOutput("html")}
+                variant="outlined"
+                color="info"
+                size="small"
+              >
+                <Typography variant="h5"> WEB</Typography>
+              </Button>
+            </Box>
+            <Box
+              sx={{
+                maxHeight: "80vh", // Set the maximum height for the Box
+                overflowY: "auto", // Add a vertical scrollbar when content overflows
+              }}
+            >
+              {output === "json" ? (
+                <SyntaxHighlighter
+                  language="json"
+                  style={railscasts}
+                  wrapLines={true}
+                >
+                  {jsonData}
+                </SyntaxHighlighter>
+              ) : (
+                <HtmlPreview
+                  gitUsername={gitUsername}
+                  setGitUsername={setGitUsername}
+                  selectValue={selectValue}
+                  setSelectValue={setSelectValue}
+                />
+              )}
+            </Box>
+            {output === "json" && (
+              <CopyButton
+                copied={copied}
+                jsonData={jsonData}
+                setCopied={setCopied}
+                handleClick={handleClick}
+                open={open}
+                handleClose={handleClose}
+              />
+            )}
+          </Grid>
+        </Grid>
+      )}
+    </Formik>
   );
 };
 

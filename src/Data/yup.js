@@ -19,8 +19,8 @@ const resumeSchema = Yup.object().shape({
       .required("Name is required")
       .min(3, "at least Three char long"),
     label: Yup.string().required("Label is required"),
-    image: Yup.string().matches(urlRegExp, urlWarning),
-    url: Yup.string().matches(urlRegExp, "Enter correct url!"),
+    image: Yup.string().url(urlWarning),
+    url: Yup.string().url("Enter correct url!"),
     summary: Yup.string(),
     email: Yup.string()
       .required("Email is Must")
@@ -39,7 +39,7 @@ const resumeSchema = Yup.object().shape({
         // .required("Network is required")
         username: Yup.string(),
         // .required("Username is required")
-        url: Yup.string().matches(urlRegExp, urlWarning),
+        url: Yup.string().url(urlWarning),
         // .required("URL is required")
       })
     ),
@@ -49,7 +49,7 @@ const resumeSchema = Yup.object().shape({
     Yup.object().shape({
       name: Yup.string(),
       position: Yup.string(),
-      url: Yup.string().matches(urlRegExp, urlWarning),
+      url: Yup.string().url(urlWarning),
       startDate: Yup.string().matches(dateRegExp, dateWarning),
       endDate: Yup.string().matches(dateRegExp, dateWarning),
       summary: Yup.string(),
@@ -60,7 +60,7 @@ const resumeSchema = Yup.object().shape({
   education: Yup.array().of(
     Yup.object().shape({
       institution: Yup.string(),
-      url: Yup.string().matches(urlRegExp, urlWarning),
+      url: Yup.string().url(urlWarning),
       area: Yup.string(),
       studyType: Yup.string(),
       startDate: Yup.string().matches(dateRegExp, dateWarning),
@@ -74,7 +74,7 @@ const resumeSchema = Yup.object().shape({
     Yup.object().shape({
       organization: Yup.string(),
       position: Yup.string(),
-      url: Yup.string().matches(urlRegExp, urlWarning),
+      url: Yup.string().url(urlWarning),
       startDate: Yup.string().matches(dateRegExp, dateWarning),
       endDate: Yup.string().matches(dateRegExp, dateWarning),
       summary: Yup.string(),
@@ -94,7 +94,7 @@ const resumeSchema = Yup.object().shape({
       name: Yup.string(),
       date: Yup.string().matches(dateRegExp, dateWarning),
       issuer: Yup.string(),
-      url: Yup.string().matches(urlRegExp, urlWarning),
+      url: Yup.string().url(urlWarning),
     })
   ),
   publications: Yup.array().of(
@@ -102,7 +102,7 @@ const resumeSchema = Yup.object().shape({
       name: Yup.string(),
       publisher: Yup.string(),
       releaseDate: Yup.string().matches(dateRegExp, dateWarning),
-      url: Yup.string().matches(urlRegExp, urlWarning),
+      url: Yup.string().url(urlWarning),
       summary: Yup.string(),
     })
   ),
@@ -138,7 +138,7 @@ const resumeSchema = Yup.object().shape({
       endDate: Yup.string().matches(dateRegExp, dateWarning),
       summary: Yup.string(),
       highlights: Yup.array().of(Yup.string()),
-      url: Yup.string().matches(urlRegExp, urlWarning),
+      url: Yup.string().url(urlWarning),
     })
   ),
 });
