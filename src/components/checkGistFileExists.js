@@ -1,4 +1,4 @@
-import { Octokit } from "https://esm.sh/octokit";
+import { Octokit } from "octokit";
 export const checkGistFileExists = async (gistID, fileName) => {
   const octokit = new Octokit();
 

@@ -1,4 +1,4 @@
-import { Octokit } from "https://esm.sh/octokit";
+import { Octokit } from "octokit";
 
 export const checkTokenValidity = async (token, setGitUsername) => {
   const octokit = new Octokit({

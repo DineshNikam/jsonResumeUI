@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
-import { Octokit, RequestError } from "https://esm.sh/octokit";
+import { Octokit, RequestError } from "octokit";
 import { filterValidProperties } from "../../../components/filterValidProperty";
 import resumeSchema from "../../../Data/yup";
 import { initialResumeData } from "./../../../Data/initialValue";
