@@ -176,7 +176,7 @@ const GitForm = ({
       }
     }
   };
-  // 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
+  
   const handleUpdateGistData = async () => {
     if (!apiKey || apiKey === "") {
       setPostStatus("Set and Validate Api key");
