@@ -77,6 +77,12 @@ const JsonResumeForm = () => {
     setOpen(false);
   };
 
+  const handleSubmit = (values, { setSubmitting }) => {
+    // Your form submission logic here
+    console.log(values);
+    setSubmitting(false);
+  };
+
   // ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦ Git related  ♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦
   const [apiKey, setApiKey] = useState("");
   const [openGit, setOpenGit] = useState(false);
@@ -90,32 +96,22 @@ const JsonResumeForm = () => {
       enableReinitialize={true}
       initialValues={initialResumeData}
       validationSchema={resumeSchema}
-      onSubmit={(values) => {
-        // console.log(values);
-      }}
+      onSubmit={handleSubmit}
     >
-      {({
-        touched,
-        errors,
-        handleSubmit,
-        isValid,
-        values,
-        setValues,
-        resetForm,
-      }) => (
+      {({ touched, errors, values, setValues, resetForm }) => (
         <Grid container spacing={2} pt={3} px={1} gap={"2"} rowGap={"50px"}>
           <Grid item xs={12} sm={12} md={6} paddingX={2} paddingY={2}>
             <Typography variant="h2">Form</Typography>
             <Box backgroundColor={color.primary[500]} pr={2}>
               <form
                 noValidate
-                onSubmit={handleSubmit}
+                onSubmit={(e) => e.preventDefault()}
                 onKeyUp={() => handleFormChange(values)}
                 onChange={() => handleFormChange(values)}
               >
                 {/* Submit Button */}
                 <Box m={"10px 0"}>
-                  <Button // Form Elements
+                  {/* <Button // Form Elements
                     color={"error"}
                     variant="outlined"
                     type="submit"
@@ -126,7 +122,7 @@ const JsonResumeForm = () => {
                     }}
                   >
                     Reset
-                  </Button>
+                  </Button> */}
                   <Button
                     color={"inherit"}
                     variant="outlined"
@@ -298,6 +294,21 @@ const JsonResumeForm = () => {
                       buttonName: "Education",
                     }}
                   />
+                  <AccordianCustom
+                    summary={"Projects "}
+                    color={color}
+                    Comp={FeildsArrayHandler}
+                    propses={{
+                      arrayName: "projects", // important to give as in yup ore initialized feild
+                      FeildName: ProjectsFeild,
+
+                      initObject: {
+                        name: "",
+                        keywords: [""],
+                      },
+                      buttonName: "Projects",
+                    }}
+                  />
 
                   {/* Volunteer */}
                   <AccordianCustom
@@ -427,22 +438,6 @@ const JsonResumeForm = () => {
                         fluency: "",
                       },
                       buttonName: "References",
-                    }}
-                  />
-
-                  <AccordianCustom
-                    summary={"Projects "}
-                    color={color}
-                    Comp={FeildsArrayHandler}
-                    propses={{
-                      arrayName: "projects", // important to give as in yup ore initialized feild
-                      FeildName: ProjectsFeild,
-
-                      initObject: {
-                        name: "",
-                        keywords: [""],
-                      },
-                      buttonName: "Projects",
                     }}
                   />
                 </Box>

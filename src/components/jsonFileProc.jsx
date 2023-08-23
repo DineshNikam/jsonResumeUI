@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useFormik, useFormikContext } from "formik";
-import { Input, Alert, Typography, Stack, Box } from "@mui/material";
+import { useFormik } from "formik";
+import { Input, Alert, Typography, Box } from "@mui/material";
 import resumeSchema from "../Data/yup";
 import { filterValidProperties } from "./filterValidProperty";
 import { initialResumeData } from "../Data/initialValue";

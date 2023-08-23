@@ -5,7 +5,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Items from "../../../components/item";
 import { createFeildsName } from "../../../components/createFeildsName";
 import DynamicArrayComp from "../../../components/dynamicArrayComp";
-
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../../theme";
 const dataProps = [
   { label: "name", name: "name", required: false },
   { label: "startDate", name: "startDate", required: false },
@@ -20,19 +21,31 @@ const ProjectsFeild = ({ index, onRemove }) => {
   const Info = createFeildsName(index, dataProps, "projects");
   //   console.log(educationInfo);
   const arrayName = `projects[${index}].highlights`;
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   return (
-    <Grid container spacing={2} mt={3}>
+    <Grid
+      container
+      spacing={0.5}
+      mt={3}
+      sx={{ backgroundColor: colors.primary[700], borderRadius: "20px" }}
+    >
       <Items array={Info.slice(0, -1)} touched={touched} errors={errors} />
       <DynamicArrayComp
         index={index}
         arrayName={arrayName}
         initWith={""}
-        addBtnName={"Project"}
-        labelText={"Project"}
+        addBtnName={"Keyword"}
+        labelText={"Keyword"}
       />
-      <IconButton onClick={() => onRemove(index)}>
-        <DeleteIcon />
-      </IconButton>
+      <Grid
+        item
+        sx={{ justifyContent: "flex-end", width: "100%", display: "flex" }}
+      >
+        <IconButton onClick={() => onRemove(index)}>
+          <DeleteIcon />
+        </IconButton>
+      </Grid>
     </Grid>
   );
 };

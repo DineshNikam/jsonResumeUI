@@ -4,6 +4,8 @@ import React from "react";
 import { Grid } from "@mui/material";
 import Items from "./../../../components/item";
 import { useFormikContext } from "formik";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../../theme";
 
 const locationInfo = [
   {
@@ -30,8 +32,15 @@ const locationInfo = [
 
 const LocationField = () => {
   const { errors, touched } = useFormikContext();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   return (
-    <Grid container spacing={2} mt={3}>
+    <Grid
+      container
+      spacing={0.5}
+      mt={3}
+      sx={{ backgroundColor: colors.primary[700], borderRadius: "20px" }}
+    >
       <Items array={locationInfo} touched={touched} errors={errors} />
     </Grid>
   );

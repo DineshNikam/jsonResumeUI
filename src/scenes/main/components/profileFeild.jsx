@@ -4,7 +4,8 @@ import { IconButton, Grid } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Items from "./../../../components/item";
 import { createFeildsName } from "./../../../components/createFeildsName";
-
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../../theme";
 // const labels = ["Network", "Username", "Url"];
 // const namesList = ["network", "username", "url"];
 
@@ -17,13 +18,25 @@ const dataProps = [
 const ProfileField = ({ index, onRemove }) => {
   const { touched, errors } = useFormikContext();
   const profileInfo = createFeildsName(index, dataProps, "basics.profiles");
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   // console.log(profileInfo);
   return (
-    <Grid container spacing={2} mt={3}>
+    <Grid
+      container
+      spacing={0.5}
+      mt={3}
+      sx={{ backgroundColor: colors.primary[700], borderRadius: "20px" }}
+    >
       <Items array={profileInfo} touched={touched} errors={errors} />
-      <IconButton onClick={() => onRemove(index)}>
-        <DeleteIcon />
-      </IconButton>
+      <Grid
+        item
+        sx={{ justifyContent: "flex-end", width: "100%", display: "flex" }}
+      >
+        <IconButton onClick={() => onRemove(index)}>
+          <DeleteIcon />
+        </IconButton>
+      </Grid>
     </Grid>
     // <Box
     //   display="grid"

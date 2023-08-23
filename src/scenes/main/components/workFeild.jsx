@@ -5,7 +5,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Items from "./../../../components/item";
 import { createFeildsName } from "./../../../components/createFeildsName";
 import DynamicArrayComp from "./../../../components/dynamicArrayComp";
-
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../../theme";
 const dataProps = [
   { label: "Name", name: "name", required: false },
   { label: "Position", name: "position", required: false },
@@ -19,13 +20,20 @@ const dataProps = [
 const WorkFeild = ({ index, onRemove }) => {
   const { touched, errors } = useFormikContext();
   const workInfo = createFeildsName(index, dataProps.slice(0, -1), "work");
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   //   console.log(`work[${index}].highlights`);
   const arrayName = `work[${index}].highlights`;
 
   //   console.log("highlights:  ", values.work[index].highlights);
 
   return (
-    <Grid container spacing={2} mt={3}>
+    <Grid
+      container
+      spacing={0.5}
+      mt={3}
+      sx={{ backgroundColor: colors.primary[700], borderRadius: "20px" }}
+    >
       <Items array={workInfo} touched={touched} errors={errors} />
       <DynamicArrayComp
         index={index}
@@ -83,12 +91,7 @@ const WorkFeild = ({ index, onRemove }) => {
 
       <Grid
         item
-        xs={12}
-        sm={12}
-        md={12}
-        paddingX={2}
-        paddingY={2}
-        justifySelf={"end"}
+        sx={{ justifyContent: "flex-end", width: "100%", display: "flex" }}
       >
         <IconButton onClick={() => onRemove(index)}>
           <DeleteIcon />

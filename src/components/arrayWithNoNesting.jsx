@@ -4,6 +4,8 @@ import { IconButton, Grid } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Items from "./item";
 import { createFeildsName } from "./createFeildsName";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../theme";
 
 const dataProps = (dataOf) => {
   switch (dataOf) {
@@ -53,17 +55,29 @@ const dataProps = (dataOf) => {
 // { label: "" ,name: "", required: false },
 
 const ArrayWithNoNesting = ({ index, onRemove, arrayName }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const { touched, errors } = useFormikContext();
   //   console.log("arrayName ", arrayName);
   const data = dataProps(arrayName);
   const info = data !== null ? createFeildsName(index, data, arrayName) : null;
 
   return (
-    <Grid container spacing={2} mt={3}>
+    <Grid
+      container
+      spacing={0.5}
+      mt={3}
+      sx={{ backgroundColor: colors.primary[700], borderRadius: "20px" }}
+    >
       {info && <Items array={info} touched={touched} errors={errors} />}
-      <IconButton onClick={() => onRemove(index)}>
-        <DeleteIcon />
-      </IconButton>
+      <Grid
+        item
+        sx={{ justifyContent: "flex-end", width: "100%", display: "flex" }}
+      >
+        <IconButton onClick={() => onRemove(index)}>
+          <DeleteIcon />
+        </IconButton>
+      </Grid>
     </Grid>
   );
 };
