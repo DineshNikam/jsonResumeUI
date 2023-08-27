@@ -13,13 +13,12 @@ import FeildsArrayHandler from "../../components/feildsArray";
 import ProfileField from "./components/profileFeild";
 import WorkFeild from "./components/workFeild";
 import EducationFeild from "./components/educationFeild";
-import VolunteerFeild from "./components/volunteerFeild";
+import SkillsFeild from "./components/skillsFeild";
 import ArrayWithNoNesting from "../../components/arrayWithNoNesting";
 
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 import railscasts from "react-syntax-highlighter/dist/esm/styles/hljs/railscasts";
-import SkillsFeild from "./components/volunteerFeild";
 import ProjectsFeild from "./components/projectsFeild";
 import InterestsFeild from "./components/interestFeild";
 import { CopyButton } from "../../components/copyButton";
@@ -29,6 +28,7 @@ import HtmlPreview from "../../components/htmlPreview";
 import GitForm, { Selectoptions } from "./components/git";
 import BasicMenu from "../../components/menu";
 import { GitValues } from "../../Data/context";
+import VolunteerFeild from "./components/volunteerFeild";
 
 // ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥   ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥/////
 
@@ -54,7 +54,7 @@ const JsonResumeForm = () => {
   );
   const debouncedUpdateJsonData = debounce((values) => {
     setJsonData(JSON.stringify(values, null, 2));
-  }, 300);
+  }, 500);
 
   // For preView of Data
   const handleFormChange = (values) => {

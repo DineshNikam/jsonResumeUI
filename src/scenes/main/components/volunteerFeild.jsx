@@ -2,25 +2,29 @@ import React from "react";
 import { useFormikContext } from "formik";
 import { IconButton, Grid } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Items from "./../../../components/item";
-import { createFeildsName } from "./../../../components/createFeildsName";
-import DynamicArrayComp from "./../../../components/dynamicArrayComp";
+import Items from "../../../components/item";
+import { createFeildsName } from "../../../components/createFeildsName";
+import DynamicArrayComp from "../../../components/dynamicArrayComp";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../../theme";
 
 const dataProps = [
-  { label: "name", name: "name", required: false },
-  { label: "level", name: "level", required: false },
-  { label: "keywords", name: "keywords", required: false },
+  { label: "Organization", name: "organization", required: false },
+  { label: "Position", name: "position", required: false },
+  { label: "Url", name: "url", required: false },
+  { label: "Start Date", name: "startDate", required: false },
+  { label: "End Date", name: "endDate", required: false },
+  { label: "Summary", name: "summary", required: false },
+  { label: "Highlights", name: "highlights", required: false },
 ];
 
-const SkillsFeild = ({ index, onRemove }) => {
+const VolunteerFeild = ({ index, onRemove }) => {
   const { touched, errors } = useFormikContext();
-  const skillsInfo = createFeildsName(index, dataProps, "skills");
+  const volunteerInfo = createFeildsName(index, dataProps, "volunteer");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const arrayName = `skills[${index}].keywords`;
+  //   console.log(educationInfo);
+  const arrayName = `volunteer[${index}].highlights`;
   return (
     <Grid
       container
@@ -29,7 +33,7 @@ const SkillsFeild = ({ index, onRemove }) => {
       sx={{ backgroundColor: colors.primary[700], borderRadius: "20px" }}
     >
       <Items
-        array={skillsInfo.slice(0, -1)}
+        array={volunteerInfo.slice(0, -1)}
         touched={touched}
         errors={errors}
       />
@@ -37,8 +41,8 @@ const SkillsFeild = ({ index, onRemove }) => {
         index={index}
         arrayName={arrayName}
         initWith={""}
-        addBtnName={"Keyword"}
-        labelText={"Keywords"}
+        addBtnName={"Volunteers"}
+        labelText={"Volunteer"}
       />{" "}
       <Grid
         item
@@ -52,4 +56,4 @@ const SkillsFeild = ({ index, onRemove }) => {
   );
 };
 
-export default SkillsFeild;
+export default VolunteerFeild;
